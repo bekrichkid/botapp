@@ -17,9 +17,7 @@ import Login from './pages/Login.jsx';
 const router = createBrowserRouter([
   {
     path: "/",
-    element: (<PrivateRouter>
-      <App />
-    </PrivateRouter>),
+    element: (<App />),
     children: [
       {
         path: "/",
