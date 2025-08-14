@@ -21,7 +21,6 @@ const Login = () => {
       ...prev,
       [name]: value
     }));
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -57,7 +56,6 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      // Simulate API call to backend
       const response = await fetch('http://localhost:8000/api/v1/auth/login', {
         method: 'POST',
         headers: {
@@ -69,13 +67,11 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Dispatch login action to Redux store
         dispatch(login({
           user: data.user,
           token: data.token
         }));
         
-        // Navigate to dashboard
         navigate('/');
       } else {
         setErrors({ submit: data.message || 'Login failed' });
@@ -88,34 +84,27 @@ const Login = () => {
   };
 
   const handleTelegramLogin = () => {
-    // Get bot info from environment variables
     const botUsername = import.meta.env.VITE_TELEGRAM_BOT_USERNAME || 'SignUp_MarsBot';
     const origin = encodeURIComponent(window.location.origin);
     
-    // Create Telegram auth URL
     const telegramAuthUrl = `https://oauth.telegram.org/auth?bot_id=6412343716&origin=${origin}&return_to=${origin}/auth/telegram/callback&request_access=write`;
     
-    // Open Telegram auth in popup
     const popup = window.open(
       telegramAuthUrl,
       'telegram-auth',
       'width=600,height=700,scrollbars=yes,resizable=yes'
     );
     
-    // Listen for popup close and handle auth result
     const checkClosed = setInterval(() => {
       if (popup.closed) {
         clearInterval(checkClosed);
-        // Handle successful auth (you might want to check URL params or local storage)
         console.log('Telegram auth completed');
       }
     }, 1000);
   };
 
-  // Handle Telegram widget callback (if using widget instead of popup)
   window.onTelegramAuth = (user) => {
     console.log('Telegram user data:', user);
-    // Process telegram login
     dispatch(login({
       user: {
         id: user.id,
@@ -124,220 +113,342 @@ const Login = () => {
         username: user.username,
         photoUrl: user.photo_url
       },
-      token: user.hash // Use appropriate token from your backend
+      token: user.hash
     }));
     navigate('/');
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left Side - Illustration */}
-      <div className="hidden lg:flex lg:flex-1 bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 relative overflow-hidden">
-        {/* Background decorative elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-32 h-32 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute top-40 right-20 w-48 h-48 bg-white/5 rounded-full blur-3xl animate-pulse" style={{animationDelay: '-2s'}}></div>
-          <div className="absolute bottom-20 left-1/4 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '-4s'}}></div>
-        </div>
-
-        {/* Illustration Content */}
-        <div className="relative z-10 flex flex-col justify-center items-center text-white px-12 w-full">
-          {/* Logo/Icon */}
-          <div className="mb-8">
-            <div className="w-24 h-24 bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center animate-bounce">
-              <span className="mars text-4xl font-bold">
-                Mars<span className="text-orange-400">hub</span>
-              </span>
-            </div>
-          </div>
-
-          {/* Welcome Text */}
-          <h1 className="text-5xl font-bold mb-6 text-center">
-            Welcome Back!
-          </h1>
-          <p className="text-xl text-white/90 text-center mb-8 leading-relaxed">
-            Sign in to access your account and continue your shopping journey
-          </p>
-
-          {/* Features */}
-          <div className="space-y-4 mb-8">
-            <div className="flex items-center gap-4">
-              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-                <i className="fas fa-shield-alt text-sm"></i>
-              </div>
-              <span className="text-lg">Secure Login</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-                <i className="fas fa-bolt text-sm"></i>
-              </div>
-              <span className="text-lg">Quick Access</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-                <i className="fas fa-heart text-sm"></i>
-              </div>
-              <span className="text-lg">Personalized Experience</span>
-            </div>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-2 gap-8 mt-12">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-orange-400">10K+</div>
-              <div className="text-sm text-white/80">Active Users</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-orange-400">99%</div>
-              <div className="text-sm text-white/80">Satisfaction</div>
-            </div>
-          </div>
-        </div>
+    <div className="min-h-screen bg-gray-50 relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse"></div>
       </div>
 
-      {/* Right Side - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-8 bg-gray-50">
-        <div className="w-full max-w-md">
-          {/* Mobile Logo */}
-          <div className="lg:hidden text-center mb-8">
-            <h1 className="mars text-3xl font-bold">
-              Mars<span className="text-orange-500">hub</span>
+      <div className="relative z-10 min-h-screen flex">
+        {/* Left Side - Enhanced Illustration */}
+        <div className="hidden lg:flex lg:flex-1 bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-700 relative overflow-hidden">
+          {/* Animated Background Shapes */}
+          <div className="absolute inset-0">
+            <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full animate-bounce"></div>
+            <div className="absolute top-20 right-20 w-16 h-16 bg-yellow-400/30 rounded-lg rotate-45 animate-spin" style={{animationDuration: '8s'}}></div>
+            <div className="absolute bottom-20 left-20 w-12 h-12 bg-pink-400/30 rounded-full animate-ping"></div>
+            <div className="absolute bottom-40 right-10 w-8 h-8 bg-green-400/30 rounded-full animate-pulse"></div>
+            
+            {/* Floating Shopping Icons */}
+            <div className="absolute top-1/4 left-1/4 w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center animate-float backdrop-blur-sm">
+              <i className="fas fa-shopping-cart text-2xl text-white"></i>
+            </div>
+            <div className="absolute top-1/3 right-1/4 w-14 h-14 bg-orange-400/30 rounded-xl flex items-center justify-center animate-float backdrop-blur-sm" style={{animationDelay: '-1s'}}>
+              <i className="fas fa-gift text-xl text-white"></i>
+            </div>
+            <div className="absolute bottom-1/3 left-1/3 w-12 h-12 bg-pink-400/30 rounded-lg flex items-center justify-center animate-float backdrop-blur-sm" style={{animationDelay: '-2s'}}>
+              <i className="fas fa-heart text-lg text-white"></i>
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <div className="relative z-10 flex flex-col justify-center items-center text-white px-12 w-full">
+            {/* Logo with Animation */}
+            <div className="mb-8 relative">
+              <div className="w-32 h-32 bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                <div className="relative z-10">
+                  <span className="mars text-2xl font-bold">
+                    Mars<span className="text-orange-400">hub</span>
+                  </span>
+                </div>
+              </div>
+              
+              {/* Decorative Elements around Logo */}
+              <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full animate-ping"></div>
+              <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-pink-400 rounded-full animate-pulse"></div>
+            </div>
+
+            {/* Welcome Text with Gradient */}
+            <h1 className="text-6xl font-extrabold mb-4 text-center bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
+              Welcome Back!
             </h1>
-          </div>
-
-          {/* Form Header */}
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">Sign In</h2>
-            <p className="text-gray-600">Enter your credentials to access your account</p>
-          </div>
-
-          {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email Input */}
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text font-medium text-gray-700">
-                  <i className="fas fa-envelope mr-2 text-blue-600"></i>Email Address
-                </span>
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                placeholder="Enter your email"
-                className={`input input-bordered w-full bg-white ${errors.email ? 'input-error' : 'border-gray-300 focus:border-blue-600'}`}
-                disabled={isLoading}
-              />
-              {errors.email && (
-                <label className="label">
-                  <span className="label-text-alt text-error">{errors.email}</span>
-                </label>
-              )}
-            </div>
-
-            {/* Password Input */}
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text font-medium text-gray-700">
-                  <i className="fas fa-lock mr-2 text-blue-600"></i>Password
-                </span>
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  placeholder="Enter your password"
-                  className={`input input-bordered w-full bg-white pr-12 ${errors.password ? 'input-error' : 'border-gray-300 focus:border-blue-600'}`}
-                  disabled={isLoading}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                  disabled={isLoading}
-                >
-                  <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
-                </button>
-              </div>
-              {errors.password && (
-                <label className="label">
-                  <span className="label-text-alt text-error">{errors.password}</span>
-                </label>
-              )}
-            </div>
-
-            {/* Remember Me & Forgot Password */}
-            <div className="flex items-center justify-between">
-              <label className="label cursor-pointer">
-                <input type="checkbox" className="checkbox checkbox-primary checkbox-sm mr-2" />
-                <span className="label-text text-sm text-gray-600">Remember me</span>
-              </label>
-              <Link to="/forgot-password" className="link link-primary text-sm">
-                Forgot password?
-              </Link>
-            </div>
-
-            {/* Submit Error */}
-            {errors.submit && (
-              <div className="alert alert-error">
-                <i className="fas fa-exclamation-circle"></i>
-                <span>{errors.submit}</span>
-              </div>
-            )}
-
-            {/* Sign In Button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className={`btn btn-primary w-full text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 ${isLoading ? 'loading' : ''}`}
-            >
-              {!isLoading && <i className="fas fa-sign-in-alt mr-2"></i>}
-              {isLoading ? 'Signing in...' : 'Sign In'}
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div className="divider my-6">
-            <span className="text-gray-500 text-sm">Or continue with</span>
-          </div>
-
-          {/* Telegram Login Button */}
-          <button
-            onClick={handleTelegramLogin}
-            className="btn w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-0 hover:scale-105 mb-4"
-          >
-            <i className="fab fa-telegram-plane mr-3 text-xl"></i>
-            Sign in with Telegram
-          </button>
-
-          {/* Social Login Options */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <button className="btn btn-outline btn-sm rounded-xl border-gray-300 hover:border-blue-600">
-              <i className="fab fa-google text-red-500 mr-2"></i>
-              Google
-            </button>
-            <button className="btn btn-outline btn-sm rounded-xl border-gray-300 hover:border-blue-600">
-              <i className="fab fa-apple text-gray-800 mr-2"></i>
-              Apple
-            </button>
-          </div>
-
-          {/* Sign Up Link */}
-          <div className="text-center pt-4 border-t border-gray-200">
-            <p className="text-gray-600">
-              Don't have an account?{' '}
-              <Link to="/register" className="link link-primary font-semibold hover:underline">
-                Sign up here
-              </Link>
+            <p className="text-xl text-white/90 text-center mb-8 leading-relaxed max-w-md">
+              Sign in to discover amazing products and exclusive deals waiting for you
             </p>
+
+            {/* Enhanced Features Grid */}
+            <div className="grid grid-cols-2 gap-6 mb-12">
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                  <i className="fas fa-shield-alt text-white text-xl"></i>
+                </div>
+                <h3 className="font-semibold text-center mb-2">Secure Login</h3>
+                <p className="text-sm text-white/80 text-center">Bank-level security</p>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+                <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-500 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                  <i className="fas fa-bolt text-white text-xl"></i>
+                </div>
+                <h3 className="font-semibold text-center mb-2">Quick Access</h3>
+                <p className="text-sm text-white/80 text-center">Lightning fast</p>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+                <div className="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                  <i className="fas fa-crown text-white text-xl"></i>
+                </div>
+                <h3 className="font-semibold text-center mb-2">Premium Deals</h3>
+                <p className="text-sm text-white/80 text-center">Exclusive offers</p>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+                <div className="w-12 h-12 bg-gradient-to-r from-pink-400 to-red-500 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                  <i className="fas fa-heart text-white text-xl"></i>
+                </div>
+                <h3 className="font-semibold text-center mb-2">Wishlist</h3>
+                <p className="text-sm text-white/80 text-center">Save favorites</p>
+              </div>
+            </div>
+
+            {/* Enhanced Stats */}
+            <div className="flex justify-center space-x-12">
+              <div className="text-center">
+                <div className="text-4xl font-bold text-yellow-400 mb-1">50K+</div>
+                <div className="text-sm text-white/80">Happy Shoppers</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-bold text-yellow-400 mb-1">99.9%</div>
+                <div className="text-sm text-white/80">Uptime</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-bold text-yellow-400 mb-1">4.9★</div>
+                <div className="text-sm text-white/80">Rating</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side - Enhanced Login Form */}
+        <div className="flex-1 flex items-center justify-center p-8">
+          <div className="w-full max-w-md">
+            {/* Mobile Logo */}
+            <div className="lg:hidden text-center mb-8">
+              <h1 className="mars text-4xl font-bold">
+                Mars<span className="text-orange-500">hub</span>
+              </h1>
+              <p className="text-gray-600 mt-2">Your Premium Shopping Destination</p>
+            </div>
+
+            {/* Enhanced Form Container */}
+            <div className="bg-white rounded-3xl shadow-2xl p-8 backdrop-blur-lg border border-gray-100 relative overflow-hidden">
+              {/* Decorative Background */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-purple-100 to-transparent rounded-bl-full"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-blue-100 to-transparent rounded-tr-full"></div>
+              
+              <div className="relative z-10">
+                {/* Form Header */}
+                <div className="text-center mb-8">
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <i className="fas fa-user text-2xl text-white"></i>
+                  </div>
+                  <h2 className="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h2>
+                  <p className="text-gray-600">Please sign in to your account</p>
+                </div>
+
+                {/* Login Form */}
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Email Input with Enhanced Design */}
+                  <div className="form-control">
+                    <label className="label">
+                      <span className="label-text font-semibold text-gray-700 flex items-center">
+                        <i className="fas fa-envelope mr-2 text-purple-600"></i>Email Address
+                      </span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        placeholder="Enter your email"
+                        className={`input input-bordered w-full bg-gray-50 border-2 transition-all duration-300 focus:bg-white focus:scale-105 ${
+                          errors.email 
+                            ? 'border-red-400 focus:border-red-500' 
+                            : 'border-gray-200 focus:border-purple-500 hover:border-purple-300'
+                        }`}
+                        disabled={isLoading}
+                      />
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                        <i className="fas fa-at text-gray-400"></i>
+                      </div>
+                    </div>
+                    {errors.email && (
+                      <label className="label">
+                        <span className="label-text-alt text-red-500 flex items-center">
+                          <i className="fas fa-exclamation-circle mr-1"></i>
+                          {errors.email}
+                        </span>
+                      </label>
+                    )}
+                  </div>
+
+                  {/* Password Input with Enhanced Design */}
+                  <div className="form-control">
+                    <label className="label">
+                      <span className="label-text font-semibold text-gray-700 flex items-center">
+                        <i className="fas fa-lock mr-2 text-purple-600"></i>Password
+                      </span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        name="password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        placeholder="Enter your password"
+                        className={`input input-bordered w-full bg-gray-50 border-2 transition-all duration-300 focus:bg-white focus:scale-105 pr-12 ${
+                          errors.password 
+                            ? 'border-red-400 focus:border-red-500' 
+                            : 'border-gray-200 focus:border-purple-500 hover:border-purple-300'
+                        }`}
+                        disabled={isLoading}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-purple-600 transition-colors duration-200"
+                        disabled={isLoading}
+                      >
+                        <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                      </button>
+                    </div>
+                    {errors.password && (
+                      <label className="label">
+                        <span className="label-text-alt text-red-500 flex items-center">
+                          <i className="fas fa-exclamation-circle mr-1"></i>
+                          {errors.password}
+                        </span>
+                      </label>
+                    )}
+                  </div>
+
+                  {/* Remember & Forgot */}
+                  <div className="flex items-center justify-between">
+                    <label className="label cursor-pointer flex items-center">
+                      <input type="checkbox" className="checkbox checkbox-primary checkbox-sm mr-2" />
+                      <span className="label-text text-sm text-gray-600">Remember me</span>
+                    </label>
+                    <Link to="/forgot-password" className="link text-purple-600 hover:text-purple-800 text-sm font-medium">
+                      Forgot password?
+                    </Link>
+                  </div>
+
+                  {/* Submit Error */}
+                  {errors.submit && (
+                    <div className="alert alert-error bg-red-50 border-red-200 text-red-800">
+                      <i className="fas fa-exclamation-circle"></i>
+                      <span>{errors.submit}</span>
+                    </div>
+                  )}
+
+                  {/* Enhanced Sign In Button */}
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className={`btn w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border-0 ${
+                      isLoading ? 'loading' : 'hover:scale-105'
+                    }`}
+                  >
+                    {!isLoading && <i className="fas fa-sign-in-alt mr-2"></i>}
+                    {isLoading ? 'Signing in...' : 'Sign In to Shop'}
+                  </button>
+                </form>
+
+                {/* Enhanced Divider */}
+                <div className="divider my-8">
+                  <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent font-semibold text-sm">
+                    Or continue with
+                  </span>
+                </div>
+
+                {/* Enhanced Telegram Button */}
+                <button
+                  onClick={handleTelegramLogin}
+                  className="btn w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border-0 hover:scale-105 mb-4"
+                >
+                  <i className="fab fa-telegram-plane mr-3 text-xl"></i>
+                  Continue with Telegram
+                </button>
+
+                {/* Enhanced Social Buttons */}
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <button className="btn btn-outline border-2 border-gray-200 hover:border-red-400 hover:bg-red-50 rounded-xl py-3 transition-all duration-300 hover:scale-105">
+                    <i className="fab fa-google text-red-500 mr-2"></i>
+                    <span className="text-gray-700">Google</span>
+                  </button>
+                  <button className="btn btn-outline border-2 border-gray-200 hover:border-gray-800 hover:bg-gray-50 rounded-xl py-3 transition-all duration-300 hover:scale-105">
+                    <i className="fab fa-apple text-gray-800 mr-2"></i>
+                    <span className="text-gray-700">Apple</span>
+                  </button>
+                </div>
+
+                {/* Enhanced Sign Up Link */}
+                <div className="text-center pt-6 border-t border-gray-200">
+                  <p className="text-gray-600">
+                    New to Marshub?{' '}
+                    <Link 
+                      to="/register" 
+                      className="font-semibold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent hover:from-purple-700 hover:to-blue-700 transition-all duration-300"
+                    >
+                      Create your account
+                    </Link>
+                  </p>
+                  <p className="text-sm text-gray-500 mt-2">Join thousands of happy shoppers today!</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Trust Indicators */}
+            <div className="mt-8 text-center">
+              <div className="flex justify-center items-center space-x-6 text-gray-500 text-sm">
+                <div className="flex items-center">
+                  <i className="fas fa-shield-alt mr-2 text-green-500"></i>
+                  <span>Secure</span>
+                </div>
+                <div className="flex items-center">
+                  <i className="fas fa-lock mr-2 text-blue-500"></i>
+                  <span>Encrypted</span>
+                </div>
+                <div className="flex items-center">
+                  <i className="fas fa-certificate mr-2 text-purple-500"></i>
+                  <span>Verified</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 };
+
+// CSS animatsiyalar uchun
+const styles = `
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+`;
+
+// Style'ni document'ga qo'shish
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = styles;
+  document.head.appendChild(styleSheet);
+}
 
 export default Login;
