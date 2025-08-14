@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { login } from '../redux/slices/authSlice';
@@ -14,6 +14,88 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  // Telegram widget'ni dinamik yuklash
+  useEffect(() => {
+    // Agar Telegram script allaqachon mavjud bo'lsa, qayta yuklamaymiz
+    if (window.Telegram && window.Telegram.Login) {
+      return;
+    }
+
+    // Telegram script'ni dinamik yuklash
+    const script = document.createElement('script');
+    script.src = 'https://telegram.org/js/telegram-widget.js?22';
+    script.async = true;
+    script.setAttribute('data-telegram-login', 'SignUp_MarsBot');
+    script.setAttribute('data-size', 'large');
+    script.setAttribute('data-onauth', 'onTelegramAuth(user)');
+    script.setAttribute('data-request-access', 'write');
+    
+    // Script yuklanganda callback
+    script.onload = () => {
+      console.log('Telegram widget loaded');
+    };
+
+    document.head.appendChild(script);
+
+    // Global callback function'ni o'rnatish
+    window.onTelegramAuth = (user) => {
+      console.log('Telegram user data:', user);
+      
+      // Backend'ga Telegram user ma'lumotlarini yuborish
+      handleTelegramAuthSuccess(user);
+    };
+
+    // Cleanup function - component unmount bo'lganda script'ni olib tashlash
+    return () => {
+      const existingScript = document.querySelector('script[src*="telegram-widget"]');
+      if (existingScript) {
+        existingScript.remove();
+      }
+      
+      // Global callback'ni tozalash
+      if (window.onTelegramAuth) {
+        delete window.onTelegramAuth;
+      }
+    };
+  }, []);
+
+  // Telegram auth muvaffaqiyatli bo'lganda
+  const handleTelegramAuthSuccess = async (telegramUser) => {
+    setIsLoading(true);
+    
+    try {
+      // Backend'ga Telegram user ma'lumotlarini yuborish
+      const response = await fetch('http://localhost:8000/api/v1/auth/telegram-login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          telegramData: telegramUser
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Redux store'ga user ma'lumotlarini saqlash
+        dispatch(login({
+          user: data.user,
+          token: data.token
+        }));
+        
+        // Dashboard'ga yo'naltirish
+        navigate('/');
+      } else {
+        setErrors({ submit: data.message || 'Telegram login failed' });
+      }
+    } catch (error) {
+      setErrors({ submit: 'Network error during Telegram login' });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -84,21 +166,29 @@ const Login = () => {
   };
 
   const handleTelegramLogin = () => {
-    const botUsername = import.meta.env.VITE_TELEGRAM_BOT_USERNAME || 'SignUp_MarsBot';
+    // Telegram widget orqali login - bu faqat fallback
+    // Asosiy logic useEffect'da bor
+    
+    // Alternative: Manual Telegram OAuth (agar widget ishlamasa)
+    const botId = '6412343716';
+    const botUsername = 'SignUp_MarsBot';
     const origin = encodeURIComponent(window.location.origin);
     
-    const telegramAuthUrl = `https://oauth.telegram.org/auth?bot_id=6412343716&origin=${origin}&return_to=${origin}/auth/telegram/callback&request_access=write`;
+    const telegramAuthUrl = `https://oauth.telegram.org/auth?bot_id=${botId}&origin=${origin}&return_to=${origin}/auth/telegram/callback&request_access=write`;
     
+    // Popup oynasida ochish
     const popup = window.open(
       telegramAuthUrl,
       'telegram-auth',
       'width=600,height=700,scrollbars=yes,resizable=yes'
     );
     
+    // Popup yopilganda tekshirish
     const checkClosed = setInterval(() => {
       if (popup.closed) {
         clearInterval(checkClosed);
-        console.log('Telegram auth completed');
+        console.log('Telegram auth popup closed');
+        // Bu yerda URL parametrlarini yoki localStorage'ni tekshirishingiz mumkin
       }
     }, 1000);
   };
@@ -371,14 +461,20 @@ const Login = () => {
                   </span>
                 </div>
 
-                {/* Enhanced Telegram Button */}
-                <button
-                  onClick={handleTelegramLogin}
-                  className="btn w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border-0 hover:scale-105 mb-4"
-                >
-                  <i className="fab fa-telegram-plane mr-3 text-xl"></i>
-                  Continue with Telegram
-                </button>
+                {/* Enhanced Telegram Button with Widget Integration */}
+                <div className="mb-4">
+                  {/* Custom Telegram Login Button */}
+                  <button
+                    onClick={handleTelegramLogin}
+                    className="btn w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border-0 hover:scale-105"
+                  >
+                    <i className="fab fa-telegram-plane mr-3 text-xl"></i>
+                    Continue with Telegram
+                  </button>
+                  
+                  {/* Telegram Widget Container (yashirin, faqat script uchun) */}
+                  <div id="telegram-login-widget" className="hidden"></div>
+                </div>
 
                 {/* Enhanced Social Buttons */}
                 <div className="grid grid-cols-2 gap-4 mb-6">
