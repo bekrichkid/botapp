@@ -23,7 +23,7 @@ const router = createBrowserRouter([
         <App />
       </PrivateRouter>
     ),
-    errorElement: <div>Page not found!</div>, // Error boundary qo'shing
+    errorElement: <div>Page not found!</div>,
   },
   {
     path: "/login",
@@ -49,12 +49,18 @@ const router = createBrowserRouter([
       </div>
     ),
   }
-]);
+], {
+  basename: "/" // Production uchun basename
+});
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
-      <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+      <PersistGate loading={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="loading loading-spinner loading-lg"></div>
+        </div>
+      } persistor={persistor}>
         <RouterProvider router={router} />
       </PersistGate>
     </Provider>

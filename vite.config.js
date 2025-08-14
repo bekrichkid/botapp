@@ -8,20 +8,20 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
-    // SPA routing uchun history fallback
     historyApiFallback: true,
   },
   preview: {
     port: 3000,
-    // Preview mode uchun ham history fallback
     historyApiFallback: true,
   },
   build: {
-    // Build vaqtida ham routing ishlashi uchun
+    outDir: 'dist',
+    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks: undefined,
       },
     },
   },
+  base: './', // Relative paths uchun
 })
