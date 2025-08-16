@@ -20,7 +20,6 @@ const authSlice = createSlice({
             state.token = null;
             state.isAuth = false;
         }
-        
     }
 })
 

@@ -66,3 +66,6 @@ createRoot(document.getElementById('root')).render(
     </Provider>
   </StrictMode>
 )
+
+// REDUX GLOBAL STATE 
+// REDUX STATE => LOCALSTORAGE
