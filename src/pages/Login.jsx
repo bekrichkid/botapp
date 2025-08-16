@@ -361,7 +361,7 @@ const Login = () => {
                         value={formData.email}
                         onChange={handleInputChange}
                         placeholder="Enter your email"
-                        className={`input input-bordered w-full bg-gray-50 border-2 transition-all duration-300 focus:bg-white focus:scale-105 ${
+                        className={`input input-bordered w-full bg-gray-50 border-2 transition-all text-black duration-300 focus:bg-white focus:scale-105 ${
                           errors.email 
                             ? 'border-red-400 focus:border-red-500' 
                             : 'border-gray-200 focus:border-purple-500 hover:border-purple-300'
@@ -396,7 +396,7 @@ const Login = () => {
                         value={formData.password}
                         onChange={handleInputChange}
                         placeholder="Enter your password"
-                        className={`input input-bordered w-full bg-gray-50 border-2 transition-all duration-300 focus:bg-white focus:scale-105 pr-12 ${
+                        className={`input input-bordered w-full bg-gray-50 border-2 text-black transition-all duration-300 focus:bg-white focus:scale-105 pr-12 ${
                           errors.password 
                             ? 'border-red-400 focus:border-red-500' 
                             : 'border-gray-200 focus:border-purple-500 hover:border-purple-300'
