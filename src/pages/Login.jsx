@@ -35,7 +35,7 @@ const Login = () => {
     production: {
       apiUrl: 'https://one063development.onrender.com', // 🚨 Backend URL'ni o'zgartiring
       telegramTest: false,
-      domain: 'ecommerce-client-1063.onrender.com'
+      domain: 'https://one063development.onrender.com'
     }
   };
 
