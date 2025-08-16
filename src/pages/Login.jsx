@@ -33,7 +33,7 @@ const Login = () => {
       domain: 'localhost:3000'
     },
     production: {
-      apiUrl: 'https://your-backend-app.onrender.com', // 🚨 Backend URL'ni o'zgartiring
+      apiUrl: 'https://one063development.onrender.com', // 🚨 Backend URL'ni o'zgartiring
       telegramTest: false,
       domain: 'ecommerce-client-1063.onrender.com'
     }
