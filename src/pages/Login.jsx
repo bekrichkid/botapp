@@ -369,7 +369,7 @@ export default function Login() {
 
                 {/* Telegram button area */}
                 <div className="mb-4">
-                  <button
+                  {/* <button
                     onClick={handleTelegramLogin}
                     disabled={isLoading}
                     className={`btn w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border-0 ${
@@ -378,7 +378,7 @@ export default function Login() {
                   >
                     {!isLoading && <i className="fab fa-telegram-plane mr-3 text-xl"></i>}
                     {isLoading ? 'Connecting...' : isDevelopment ? 'Test Telegram Login' : 'Continue with Telegram'}
-                  </button>
+                  </button> */}
 
                   {!isDevelopment && (
                     <div className="text-center mt-2">
