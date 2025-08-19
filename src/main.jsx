@@ -14,6 +14,7 @@ import {
 import PrivateRouter from './guard/PrivateRouter.jsx';
 import Register from './pages/Register.jsx';
 import Login from './pages/Login.jsx';
+import TelegramCallback from './pages/TelegramCallback.jsx';
 
 const router = createBrowserRouter([
   {
@@ -30,9 +31,10 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "/register", 
+    path: "/register",
     element: <Register />,
   },
+  { path: '/telegram/callback', element: <TelegramCallback /> },
   {
     path: "*", // Catch-all route for 404
     element: (
@@ -66,3 +68,6 @@ createRoot(document.getElementById('root')).render(
     </Provider>
   </StrictMode>
 )
+
+// REDUX GLOBAL STATE 
+// REDUX STATE => LOCALSTORAGE
