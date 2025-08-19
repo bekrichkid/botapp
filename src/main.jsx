@@ -15,6 +15,7 @@ import PrivateRouter from './guard/PrivateRouter.jsx';
 import Register from './pages/Register.jsx';
 import Login from './pages/Login.jsx';
 import TelegramCallback from './pages/TelegramCallback.jsx';
+import UserProfile from './pages/Profile.jsx';
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,12 @@ const router = createBrowserRouter([
         <App />
       </PrivateRouter>
     ),
+    children: [
+      {
+        path: "/",
+        element: <UserProfile />,
+      },
+    ],
     errorElement: <div>Page not found!</div>,
   },
   {
