@@ -4,9 +4,12 @@ import { useDispatch } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { login } from '../redux/slices/authSlice';
 
+// src/pages/Login.jsx da CONFIG qismini yangilang:
+
 const PROD_HOSTS = [
   'one063development.onrender.com',
   'ecommerce-client-1063.onrender.com',
+  'ecommerce-practice-backend.onrender.com', // Yangi backend URL
   // agar keyin custom domen bo'lsa shu yerga qo'sh
 ];
 
@@ -20,14 +23,15 @@ const CONFIG = {
   development: {
     apiUrl: 'http://localhost:8000',
     telegramTest: true,
-    domain: 'localhost:5173', // yoki 3000 — front dev porting
+    domain: 'localhost:3000', // yoki 5173 — front dev port
   },
   production: {
-    apiUrl: 'https://one063development.onrender.com', // BACKEND Render URL (o'zingniki)
+    apiUrl: 'https://ecommerce-practice-backend.onrender.com', // YANGI BACKEND URL
     telegramTest: false,
-    domain: 'one063development.onrender.com', // faqat HOSTNAME (https:// YO'Q!)
+    domain: 'one063development.onrender.com', // Frontend domain (https:// YO'Q!)
   },
 };
+
 
 const currentConfig = isDevelopment ? CONFIG.development : CONFIG.production;
 
