@@ -26,7 +26,7 @@ const Register = () => {
     const script = document.createElement('script');
     script.src = 'https://telegram.org/js/telegram-widget.js?22';
     script.async = true;
-    script.setAttribute('data-telegram-login', 'SignUp_MarsBot');
+    script.setAttribute('data-telegram-login', 'isroilbek_back_bot');
     script.setAttribute('data-size', 'large');
     script.setAttribute('data-onauth', 'onTelegramAuth(user)');
     script.setAttribute('data-request-access', 'write');
@@ -169,8 +169,8 @@ const Register = () => {
   };
 
   const handleTelegramLogin = () => {
-    const botId = '6412343716';
-    const botUsername = 'SignUp_MarsBot';
+    const botId = '7538109815';
+    const botUsername = 'isroilbek_back_bot';
     const origin = encodeURIComponent(window.location.origin);
 
     const telegramAuthUrl = `https://oauth.telegram.org/auth?bot_id=${botId}&origin=${origin}&return_to=${origin}/auth/telegram/callback&request_access=write`;
