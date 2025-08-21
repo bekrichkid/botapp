@@ -7,10 +7,7 @@ import { login } from '../redux/slices/authSlice';
 // src/pages/Login.jsx da CONFIG qismini yangilang:
 
 const PROD_HOSTS = [
-  'one063development.onrender.com',
-  'ecommerce-client-1063.onrender.com',
-  'ecommerce-practice-backend.onrender.com', // Yangi backend URL
-  // agar keyin custom domen bo'lsa shu yerga qo'sh
+  "ecommerce-client-gfmv.onrender.com"
 ];
 
 const hostname = window.location.hostname;
@@ -26,7 +23,7 @@ const CONFIG = {
     domain: 'localhost:3000', // yoki 5173 — front dev port
   },
   production: {
-    apiUrl: 'https://ecommerce-practice-backend.onrender.com', // YANGI BACKEND URL
+    apiUrl: 'http://localhost:800', // YANGI BACKEND URL
     telegramTest: false,
     domain: 'one063development.onrender.com', // Frontend domain (https:// YO'Q!)
   },
@@ -37,8 +34,8 @@ const currentConfig = isDevelopment ? CONFIG.development : CONFIG.production;
 
 // 🤖 Telegram
 const TELEGRAM_CONFIG = {
-  botUsername: 'SignUp_MarsBot',
-  botId: '6412343716',
+  botUsername: 'isroilbek_back_bot',
+  botId: '7538109815',
   widgetSrc: 'https://telegram.org/js/telegram-widget.js?22',
   domain: currentConfig.domain, // hostname only
 };
